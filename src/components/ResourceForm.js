@@ -7,10 +7,10 @@ const ResourceForm = ({ moduleId, addResource }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (resourceType === 'pdf' && file) {
+    if ((resourceType === 'pdf' || resourceType === 'image') && file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        addResource(moduleId, { ...resource, type: 'pdf', file: reader.result, id: Date.now() });
+        addResource(moduleId, { ...resource, type: resourceType, file: reader.result, id: Date.now() });
         setResource({ name: '', url: '' });
         setFile(null);
       };
@@ -26,6 +26,7 @@ const ResourceForm = ({ moduleId, addResource }) => {
       <select value={resourceType} onChange={(e) => setResourceType(e.target.value)}>
         <option value="link">Link</option>
         <option value="pdf">PDF</option>
+        <option value="image">Image</option>
       </select>
       <input
         type="text"
@@ -45,7 +46,7 @@ const ResourceForm = ({ moduleId, addResource }) => {
       ) : (
         <input
           type="file"
-          accept="application/pdf"
+          accept={resourceType === 'pdf' ? 'application/pdf' : 'image/*'}
           onChange={(e) => setFile(e.target.files[0])}
           required
         />
